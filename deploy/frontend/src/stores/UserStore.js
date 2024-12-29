@@ -2,8 +2,6 @@ import axios from "axios";
 import { makeAutoObservable } from "mobx";
 import { API_URL } from "../config.js";
 
-const ;
-
 class UserStore {
     isAuth = false;
     isLoading = false;
@@ -12,13 +10,14 @@ class UserStore {
     errorMessage = "";
     user = null;
     isPremium = false;
+    candidat = null;
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    changeIsAuth() {
-        this.isAuth = !this.isAuth;
+    get userFullName() {
+        return `${this.user?.last_name} ${this.user?.first_name}`
     }
 
     clearMessage() {
@@ -36,7 +35,7 @@ class UserStore {
         this.initializeAxiosHeaders(null);
     }
 
-    loggedUser(user) {
+    setUser = (user) => {
         this.isAuth = true;
         this.isPremium = false;
         this.user = user;
@@ -58,7 +57,7 @@ class UserStore {
             try {
                 this.isFetchingTokenLoading = true;
                 const res = await axios.get(`${API_URL}/auth`);
-                this.loggedUser(res.data.user);
+                this.setUser(res.data.user);
                 this.isFetchingTokenLoading = false;
                 return res.data;
             } catch (error) {
@@ -70,9 +69,9 @@ class UserStore {
 
     async checkServer() {
         try {
-            const res = await axios.get(`${API_URL}/checkServer`);
-            console.log(res.data.message);
-            return res;
+            await axios.get(`${API_URL}/checkServer`);
+
+            return;
         } catch (error) {
             console.log(error.message);
         }
@@ -80,20 +79,31 @@ class UserStore {
 
     async loginUser(candidat) {
         this.isLoading = true;
+
+        const {login, password} = candidat || {};
+
+        if (!login || !password) {
+            return;
+        }
+
         try {
+
             const res = await axios.post(`${API_URL}/auth/login`, candidat);
-            this.loggedUser(res.data.user);
-            this.isLoading = false;
+
+            this.setUser(res.data.user);
+
             const token = res.data.token;
+
+
             localStorage.setItem("bgtrackerjwt", token);
             this.initializeAxiosHeaders(token);
             this.successMessage = "Вход выполнен успешно";
+            this.isLoading = false;
+
             return res.data;
         } catch (error) {
             this.isLoading = false;
             this.errorMessage = error.response?.data.message;
-
-            this.isAuth = true;
         }
     }
 }

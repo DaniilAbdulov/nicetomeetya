@@ -1,4 +1,5 @@
-import {} from "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config({ path: "./.env" });
 
 export const development = {
     client: "postgresql",

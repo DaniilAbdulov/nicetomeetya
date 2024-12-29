@@ -31,12 +31,12 @@ export const AuthForm = observer(() => {
             autoComplete="off"
         >
             <Form.Item
-                label="Username"
-                name="username"
+                label="Login"
+                name="login"
                 rules={[
                     {
                         required: true,
-                        message: "Please input your username!",
+                        message: "Please input your login!",
                     },
                 ]}
             >
