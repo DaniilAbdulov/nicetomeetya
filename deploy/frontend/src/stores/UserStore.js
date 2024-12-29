@@ -2,13 +2,7 @@ import axios from "axios";
 import { makeAutoObservable } from "mobx";
 import { API_URL } from "../config.js";
 
-const initializeAxiosHeaders = (token) => {
-    if (token) {
-        axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-    } else {
-        delete axios.defaults.headers.common.Authorization;
-    }
-};
+const ;
 
 class UserStore {
     isAuth = false;
@@ -39,7 +33,7 @@ class UserStore {
         this.isAuth = false;
         this.user = null;
         localStorage.removeItem("bgtrackerjwt");
-        initializeAxiosHeaders(null);
+        this.initializeAxiosHeaders(null);
     }
 
     loggedUser(user) {
@@ -48,9 +42,18 @@ class UserStore {
         this.user = user;
     }
 
+    initializeAxiosHeaders = (token) => {
+        if (token) {
+            axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+        } else {
+            delete axios.defaults.headers.common.Authorization;
+        }
+    }
+
     async authenticateUser() {
         const token = localStorage.getItem("bgtrackerjwt");
-        initializeAxiosHeaders(token);
+        this.initializeAxiosHeaders(token);
+
         if (token) {
             try {
                 this.isFetchingTokenLoading = true;
@@ -83,7 +86,7 @@ class UserStore {
             this.isLoading = false;
             const token = res.data.token;
             localStorage.setItem("bgtrackerjwt", token);
-            initializeAxiosHeaders(token);
+            this.initializeAxiosHeaders(token);
             this.successMessage = "Вход выполнен успешно";
             return res.data;
         } catch (error) {
