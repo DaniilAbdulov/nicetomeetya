@@ -1,0 +1,28 @@
+Dating app
+
+frontend:
+-react
+-mui
+- RouterStore, UserStore
+
+backend:
+    services:
+        - users (users, rights)
+        - dates (likes, dislikes)
+        - clients (photos, contacts)
+PG, knex
+
+docker: 
+ all services in docker
+
+k8s:
+ all containers in k8s
+
+Other:
+- redis,
+- Postgresql(indexes)
+- Notifications API
+- Clipboard API
+- OOP principals
+
+
