@@ -20,6 +20,10 @@ class UserStore {
         return `${this.user?.last_name} ${this.user?.first_name}`
     }
 
+    get userId() {
+        return this.user?.id ?? null;
+    }
+
     clearMessage() {
         if (this.successMessage) {
             this.successMessage = "";
