@@ -3,13 +3,14 @@ Dating app
 frontend:
 -react
 -mui
-- RouterStore, UserStore
+-UserStore
 
 backend:
     services:
-        - users (users, rights)
-        - dates (likes, dislikes)
-        - clients (photos, contacts)
+        - users.service (users, rights, roles)
+        - sympathy.service (likes, dislikes)
+        - history.service (logs)
+        - addresses.service (cities)
 PG, knex
 
 docker: 
