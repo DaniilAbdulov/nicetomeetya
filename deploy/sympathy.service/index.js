@@ -1,33 +1,35 @@
 import dotenv from "dotenv";
 dotenv.config({ path: "../.env" });
-import express from "express";
-import cors from "cors";
+import Fastify from "fastify";
+import cors from "@fastify/cors";
 import { db } from './db/db.js';
 import { USERS_API_URL } from "./config.js";
 
-const PORT = process.env.PORT || 4002;
+const PORT = Number(process.env.PORT) || 4002;
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+const fastify = Fastify();
 
-app.post("/api/create", async (req, res) => {
+
+fastify.register(cors);
+
+
+fastify.post("/api/create", async (req, reply) => {
     const { from_user_id, to_user_id } = req.body || {};
 
     if (!from_user_id || !to_user_id) {
-        return res.status(400).json({ error: 'invalid' });
+        return reply.status(400).send({ error: 'invalid' });
     }
 
     try {
         await db('sympathy').insert({ from_user_id, to_user_id, created_at: new Date() });
-        return res.status(201).json({ res: 'success' });
+        return reply.status(201).send({ res: 'success' });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        return reply.status(500).send({ error: 'Internal Server Error' });
     }
 });
 
-app.get("/api/", async (req, res) => {
+fastify.get("/api/", async (req, reply) => {
     try {
         const data = await db('sympathy').select();
 
@@ -68,18 +70,24 @@ app.get("/api/", async (req, res) => {
             };
         });
 
-        return res.json({ data: result });
+        return reply.send({ data: result });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        return reply.status(500).send({ error: 'Internal Server Error' });
     }
 });
 
 const start = async () => {
     try {
-        app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+        fastify.listen({ port: PORT }, (err, address) => {
+            if (err) throw err
+            // Server is now listening on ${address}
+            console.log(`Server started on port ${PORT}`);
+          })
+
     } catch (e) {
         console.error("Server failed to start:", e);
+        process.exit(1);
     }
 };
 
