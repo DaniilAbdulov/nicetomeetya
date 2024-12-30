@@ -6,6 +6,7 @@ import { Footer, Header } from "antd/es/layout/layout";
 import { userStore } from "#stores/UserStore.js";
 import { useEffect } from "react";
 import { observer } from "mobx-react-lite";
+import { MyDrawer } from "#components/shared/MyDrawer.jsx";
 
 export const App = observer(() => {
     const {isAuth, userFullName} = userStore;

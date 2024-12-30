@@ -3,7 +3,7 @@ import { makeAutoObservable } from "mobx";
 import { API_URL } from "../config.js";
 
 class UserStore {
-    isAuth = false;
+    isAuth = true;
     isLoading = false;
     isFetchingTokenLoading = false;
     successMessage = "";

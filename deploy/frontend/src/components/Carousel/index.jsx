@@ -1,7 +1,10 @@
 import React from "react";
-import { carouselStore } from "#stores/components/Carousel/CarouselStore";
 import { CarouselView } from "./CarouselView";
+import { MyDrawer } from "#components/shared/MyDrawer.jsx";
 
-export const CarouselWrapper = () => {
-    return <CarouselView store={carouselStore} />;
-};
+export const CarouselWrapper = () => (
+    <div style={{display:'flex', flexDirection: 'column'}}>
+    <CarouselView />
+    <MyDrawer buttonName='Смотреть логи'/>
+    </div>
+) ;
