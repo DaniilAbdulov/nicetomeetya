@@ -1,25 +1,38 @@
 import dotenv from "dotenv";
 dotenv.config({ path: "../.env" });
-import express from "express";
-import cors from "cors";
-import router from "./routes/index.js";
+import Fastify from "fastify";
+import cors from "@fastify/cors";
+import { UserController } from "./controllers/userController.js";
 
-const PORT = process.env.PORT || 4000;
+const userController = new UserController();
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use("/api", router);
+const PORT = Number(process.env.PORT) || 4000;
 
-app.get("/api/checkServer", (req, res) => {
-    res.json({ message: "!!!!docker server launched!!!" });
+const fastify = Fastify();
+
+fastify.register(cors);
+fastify.get("/api/checkServer", (request, reply) => {
+    reply.send({ message: "!!!!docker server launched!!!" });
+});
+fastify.post("/api/auth/login", async (req, reply) => {
+    try {
+        await userController.login(req, reply);
+    } catch (error) {
+        console.error(error);
+        reply.status(500).send({ message: "Ошибка обработки запроса" });
+    }
 });
 
 const start = async () => {
     try {
-        app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+        fastify.listen({ port: PORT }, (err, address) => {
+            if (err) throw err;
+            // Server is now listening on ${address}
+            console.log(`Server started on port ${PORT}`);
+        });
     } catch (e) {
-        console.log(e);
+        console.error("Server failed to start:", e);
+        process.exit(1);
     }
 };
 
