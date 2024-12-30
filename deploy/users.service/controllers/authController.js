@@ -96,11 +96,20 @@ class UserController {
   }
 
   async users(req, res) {
+    console.log(req);
+    const {ids} = req.query || {};
 
     try {
-      const users = await db("users")
+      const model = db("users")
       .select()
       .limit(20);
+
+      if (ids) {
+        const splittedIds = ids.split(',');
+        model.whereIn('id', splittedIds)
+      }
+
+      const users = await model;
 
       const usersCities = users.reduce((acc, {city_id}) => {
         if (city_id) {

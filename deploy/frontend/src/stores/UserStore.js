@@ -1,6 +1,7 @@
 import axios from "axios";
 import { makeAutoObservable } from "mobx";
 import { USERS_API_URL } from "../config.js";
+import { getFullName } from "#utils/getFullName.js";
 
 class UserStore {
     isAuth = false;
@@ -17,7 +18,9 @@ class UserStore {
     }
 
     get userFullName() {
-        return `${this.user?.last_name} ${this.user?.first_name}`
+        const {first_name, last_name, middle_name} = this.user || {};
+
+        return getFullName(first_name, last_name, middle_name);
     }
 
     get userId() {

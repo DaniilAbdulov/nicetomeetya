@@ -26,7 +26,7 @@ export const CarouselView = ({users}) => {
 
                 return (
                     <div key={user.id}>
-                    <div style={contentStyle}><CarouselItem id={user.id} title={user.first_name} description={user.city} /></div>
+                    <div style={contentStyle}><CarouselItem id={user.id} title={user.full_name} description={user.city} /></div>
                   </div>
                 )
 

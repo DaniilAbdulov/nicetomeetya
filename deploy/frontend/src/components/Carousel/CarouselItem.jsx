@@ -23,7 +23,7 @@ const clickHandler = (id, key) => {
 
 export const CarouselItem = ({id, title, description}) => {
   const actions = [];
-  const sympathies = sympathiesStore.sympathies;
+  const sympathies = sympathiesStore.sympathiesByUser;
 
   if (sympathies.includes(id)) {
     actions.push(

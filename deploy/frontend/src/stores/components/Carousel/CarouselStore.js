@@ -1,4 +1,5 @@
 import {USERS_API_URL} from "#config.js";
+import { getFullName } from "#utils/getFullName.js";
 import axios from "axios";
 import { autorun, makeAutoObservable } from "mobx";
 
@@ -12,9 +13,10 @@ class CarouselStore {
     }
 
     formatUsers = (users) => users.map((user) => {
+        const {first_name, last_name, middle_name} = user || {};
         return {
             ...user,
-            full_name: `${user.last_name} ${user.first_name} ${user.middle_name}`
+            full_name: getFullName(first_name, last_name, middle_name)
         }
     })
 
