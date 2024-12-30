@@ -142,24 +142,44 @@ const users = [
       role_id: 3,
       city_id: 10,
     },
-  ];
+];
+
+const newUsers = [];
+
+for (let i = 0; i < 100; i++) {
+  if (i === 0) {
+      newUsers.push(...users);
+  }
+
+  const updatedUsers = users.map((user) => {
+
+      return {
+          ...user,
+          first_name: `${user.first_name}${i}`,
+          last_name: `${user.last_name}${i}`,
+          middle_name: `${user.middle_name}${i}`
+      }
+  })
+
+  newUsers.push(...updatedUsers)
+}
+
 
 export const up = async (knex) => {
-await knex("users").del();
+  await knex("users").del();
 
-    const hashedPasswords = await Promise.all(users.map(({first_name}) => bcrypt.hash(first_name, saltRounds)));
-    const usersForAuth = users.map(({first_name}, index) => {
+  const hashedPasswords = await Promise.all(newUsers.map(({first_name}) => bcrypt.hash(first_name, saltRounds)));
+  const usersForAuth = newUsers.map(({first_name}, index) => {
 
-        return {
-            user_id: index + 1,
-            login: first_name,
-            password: hashedPasswords[index]
+    return {
+        user_id: index + 1,
+        login: first_name,
+        password: hashedPasswords[index]
+      }
+    });
 
-        }
-    })
-
-    await Promise.all([
-        knex("users").insert(users),
+   await Promise.all([
+      knex("users").insert(newUsers),
         knex("auth").insert(usersForAuth),
         knex("roles").insert([
             {
@@ -180,4 +200,4 @@ export const down = async (knex) => await Promise.all(
         knex("auth").del(),
         knex("users").del(),
     ]
-) ;
+);

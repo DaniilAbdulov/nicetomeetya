@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import { db } from "../db/db.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import axios from "axios";
 import { ADDRESSES_API_URL } from "../config.js";
 dotenv.config();
 
@@ -96,13 +95,13 @@ class UserController {
   }
 
   async users(req, res) {
-    console.log(req);
     const {ids} = req.query || {};
 
     try {
       const model = db("users")
       .select()
-      .limit(20);
+      .limit(20)
+      .offset(0);
 
       if (ids) {
         const splittedIds = ids.split(',');
