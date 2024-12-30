@@ -157,7 +157,6 @@ await knex("users").del();
 
         }
     })
-    console.log(hashedPasswords)
 
     await Promise.all([
         knex("users").insert(users),

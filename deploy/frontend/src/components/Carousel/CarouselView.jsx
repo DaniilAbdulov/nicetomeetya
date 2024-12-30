@@ -1,7 +1,6 @@
 import { Carousel } from "antd";
 import React from "react";
 import { CarouselItem } from "./CarouselItem";
-import { MyDrawer } from "#components/shared/MyDrawer.jsx";
 
 const contentStyle = {
     display: 'flex',
@@ -16,27 +15,18 @@ const contentStyle = {
     padding: '10px 0px'
   };
 
-const elements = [
-    {id: 1, title: 'Hello world 1', description: 'Description'},
-    {id: 2, title: 'Hello world 2', description: 'Description'},
-    {id: 3, title: 'Hello world 3', description: 'Description'},
-    {id: 4, title: 'Hello world 4', description: 'Description'},
-    {id: 5, title: 'Hello world 5', description: 'Description'},
-    {id: 6, title: 'Hello world 6', description: 'Description'}
-]
-
-export const CarouselView = () => {
+export const CarouselView = ({users}) => {
     const onChange = (currentSlide) => {
         console.log(currentSlide);
       };
       return (
         <div style={{width: '300px', height: '500px'}} >
-        <Carousel afterChange={onChange} arrows infinite={true}>
-            {elements.length ? elements.map((elem) => {
+        <Carousel afterChange={onChange} arrows dots={false} infinite={true}>
+            {users.length ? users.map((user) => {
 
                 return (
-                    <div key={elem.id}>
-                    <div style={contentStyle}><CarouselItem title={elem.title} description={elem.description} /></div>
+                    <div key={user.id}>
+                    <div style={contentStyle}><CarouselItem id={user.id} title={user.first_name} description={user.city} /></div>
                   </div>
                 )
 

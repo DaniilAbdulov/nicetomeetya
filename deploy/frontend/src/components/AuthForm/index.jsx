@@ -4,10 +4,6 @@ import { observer } from "mobx-react-lite";
 import { userStore } from "../../stores/UserStore.js";
 
 export const AuthForm = observer(() => {
-    console.log(`Here`);
-
-    console.log(userStore);
-
     const onFinish = (values) => {
         userStore.loginUser(values);
     };

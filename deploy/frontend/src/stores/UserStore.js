@@ -1,9 +1,9 @@
 import axios from "axios";
 import { makeAutoObservable } from "mobx";
-import { API_URL } from "../config.js";
+import { USERS_API_URL } from "../config.js";
 
 class UserStore {
-    isAuth = true;
+    isAuth = false;
     isLoading = false;
     isFetchingTokenLoading = false;
     successMessage = "";
@@ -56,7 +56,7 @@ class UserStore {
         if (token) {
             try {
                 this.isFetchingTokenLoading = true;
-                const res = await axios.get(`${API_URL}/auth`);
+                const res = await axios.get(`${USERS_API_URL}/auth`);
                 this.setUser(res.data.user);
                 this.isFetchingTokenLoading = false;
                 return res.data;
@@ -69,7 +69,7 @@ class UserStore {
 
     async checkServer() {
         try {
-            await axios.get(`${API_URL}/checkServer`);
+            await axios.get(`${USERS_API_URL}/checkServer`);
 
             return;
         } catch (error) {
@@ -88,7 +88,7 @@ class UserStore {
 
         try {
 
-            const res = await axios.post(`${API_URL}/auth/login`, candidat);
+            const res = await axios.post(`${USERS_API_URL}/auth/login`, candidat);
 
             this.setUser(res.data.user);
 

@@ -7,8 +7,6 @@ import "./Home.scss";
 import { AuthForm } from "#components/AuthForm/index.jsx";
 
 export const Auth = observer(() => {
-    console.log(userStore);
-
     return (
         <Card className="content">
             <Flex wrap="wrap" gap="small">

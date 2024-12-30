@@ -2,6 +2,8 @@ import bcrypt from "bcrypt";
 import { db } from "../db/db.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import axios from "axios";
+import { ADDRESSES_API_URL } from "../config.js";
 dotenv.config();
 
 const generateJwt = (id, first_name, last_name) => {
@@ -33,7 +35,7 @@ class UserController {
         db("auth").where("login", login).first(),
         db('roles').select()
       ]);
-      console.log(findUser);
+
       const {user_id} = findUser || {};
 
       if (!user_id) {
@@ -43,7 +45,7 @@ class UserController {
       const [candidate] = await db("users")
         .select()
         .where({id: user_id});
-      console.log(candidate);
+
 
       let comparePassword = bcrypt.compareSync(password, findUser.password);
 
@@ -90,6 +92,60 @@ class UserController {
       return res.json({ token, user: currentUser });
     } catch (error) {
       return res.status(500).json({ message: "Непредвиденная ошибка сервера" });
+    }
+  }
+
+  async users(req, res) {
+
+    try {
+      const users = await db("users")
+      .select()
+      .limit(20);
+
+      const usersCities = users.reduce((acc, {city_id}) => {
+        if (city_id) {
+          acc.push(city_id);
+        }
+
+        return acc;
+      }, []);
+
+      const uniqueCitiesIds = [...new Set(usersCities)]
+
+      let cities;
+      const queryString = new URLSearchParams({
+        ids: uniqueCitiesIds
+      }).toString();
+
+      try {
+       const response = await fetch(`${ADDRESSES_API_URL}/getCities?${queryString}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const {data} = await response.json();
+        cities = data;
+      } catch (_) {
+        console.log(_);
+      }
+
+      const result = users.reduce((acc, user) => {
+        const {id, first_name, last_name, middle_name, role_id, city_id} = user || {};
+
+        const city = cities.find(({id}) => id === city_id)?.name;
+
+        acc.push({
+          id, first_name, last_name, middle_name, role_id, city
+        })
+
+        return acc;
+      }, [])
+
+      return res.json({result});
+    } catch (error) {
+      return res.json({error});
     }
   }
 }
