@@ -6,6 +6,7 @@ export const up = async (knex) => {
             table.string("last_name").notNullable();
             table.string("middle_name").notNullable();
             table.integer("role_id").notNullable();
+            table.integer("city_id").notNullable();
         }),
         knex.schema.createTable("roles", (table) => {
             table.increments("id").primary();
