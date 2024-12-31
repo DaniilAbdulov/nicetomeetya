@@ -31,10 +31,14 @@ export class UserController {
                     .send({ message: "Введены некорректные данные" });
             }
 
-            const [findUser, roles] = await Promise.all([
-                db("auth").where("login", login).first(),
-                db("roles").select(),
-            ]);
+            // const [findUser, roles] = await Promise.all([
+            //     db("auth").where("login", login).first(),
+            //     db("roles").select(),
+            // ]);
+            const findUser = {
+                user_id: 1,
+                password: "fff",
+            };
 
             const { user_id } = findUser || {};
 
@@ -44,18 +48,24 @@ export class UserController {
                     .send({ message: "Нет такого пользователя" });
             }
 
-            const [candidate] = await db("users")
-                .select()
-                .where({ id: user_id });
+            // const [candidate] = await db("users")
+            //     .select()
+            //     .where({ id: user_id });
+
+            const candidate = {
+                id: 1,
+                first_name: "Daniil",
+                last_name: "Abdulov",
+            };
 
             const comparePassword = bcrypt.compareSync(
                 password,
                 findUser.password
             );
 
-            if (!comparePassword) {
-                return reply.status(404).send({ message: "Неверный пароль" });
-            }
+            // if (!comparePassword) {
+            //     return reply.status(404).send({ message: "Неверный пароль" });
+            // }
 
             const token = generateJwt(
                 candidate.id,

@@ -3,6 +3,7 @@ dotenv.config({ path: "../.env" });
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { UserController } from "./controllers/userController.js";
+import authMiddleware from "./middleware/authMiddleware.js";
 
 const userController = new UserController();
 
@@ -17,6 +18,16 @@ fastify.get("/api/checkServer", (request, reply) => {
 fastify.post("/api/auth/login", async (req, reply) => {
     try {
         await userController.login(req, reply);
+    } catch (error) {
+        console.error(error);
+        reply.status(500).send({ message: "Ошибка обработки запроса" });
+    }
+});
+
+fastify.get("/api/auth", async (req, reply) => {
+    try {
+        authMiddleware(req);
+        // await userController.login(req, reply);
     } catch (error) {
         console.error(error);
         reply.status(500).send({ message: "Ошибка обработки запроса" });
