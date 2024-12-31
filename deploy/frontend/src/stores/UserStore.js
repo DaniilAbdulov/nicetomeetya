@@ -2,23 +2,24 @@ import axios from "axios";
 import { makeAutoObservable } from "mobx";
 import { USERS_API_URL } from "../config.js";
 import { getFullName } from "#utils/getFullName.js";
+import { DataLoadingState } from "./DataLoadingState.js";
 
 class UserStore {
     isAuth = false;
-    isLoading = false;
-    isFetchingTokenLoading = false;
     successMessage = "";
     errorMessage = "";
     user = null;
     isPremium = false;
     candidat = null;
+    loadingState;
 
     constructor() {
+        this.loadingState = new DataLoadingState();
         makeAutoObservable(this);
     }
 
     get userFullName() {
-        const {first_name, last_name, middle_name} = this.user || {};
+        const { first_name, last_name, middle_name } = this.user || {};
 
         return getFullName(first_name, last_name, middle_name);
     }
@@ -46,7 +47,7 @@ class UserStore {
         this.isAuth = true;
         this.isPremium = false;
         this.user = user;
-    }
+    };
 
     initializeAxiosHeaders = (token) => {
         if (token) {
@@ -54,21 +55,21 @@ class UserStore {
         } else {
             delete axios.defaults.headers.common.Authorization;
         }
-    }
+    };
 
     async authenticateUser() {
+        this.loadingState.loading();
         const token = localStorage.getItem("bgtrackerjwt");
         this.initializeAxiosHeaders(token);
 
         if (token) {
             try {
-                this.isFetchingTokenLoading = true;
                 const res = await axios.get(`${USERS_API_URL}/auth`);
                 this.setUser(res.data.user);
-                this.isFetchingTokenLoading = false;
+                this.loadingState.success();
                 return res.data;
             } catch (error) {
-                this.isFetchingTokenLoading = false;
+                this.loadingState.error();
                 console.log(error.message);
             }
         }
@@ -85,32 +86,39 @@ class UserStore {
     }
 
     async loginUser(candidat) {
-        this.isLoading = true;
+        this.loadingState.loading();
 
-        const {login, password} = candidat || {};
+        const { login, password } = candidat || {};
 
         if (!login || !password) {
             return;
         }
 
         try {
+            const response = await fetch(`${USERS_API_URL}/auth/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8",
+                },
+                body: JSON.stringify(candidat),
+            });
 
-            const res = await axios.post(`${USERS_API_URL}/auth/login`, candidat);
+            if (!response.ok) {
+                throw new Error("response is not ok");
+            }
 
-            this.setUser(res.data.user);
+            const { token, user } = (await response.json()) || {};
 
-            const token = res.data.token;
-
-
+            this.setUser(user);
             localStorage.setItem("bgtrackerjwt", token);
             this.initializeAxiosHeaders(token);
-            this.successMessage = "Вход выполнен успешно";
-            this.isLoading = false;
 
-            return res.data;
+            this.loadingState.success();
+
+            return;
         } catch (error) {
-            this.isLoading = false;
-            this.errorMessage = error.response?.data.message;
+            this.loadingState.error();
+            console.log(error);
         }
     }
 }

@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 
 export const App = observer(() => {
-    const {isAuth, userFullName} = userStore;
+    const { isAuth, userFullName } = userStore;
 
     const logOut = () => {
         userStore.logOut();
@@ -17,7 +17,7 @@ export const App = observer(() => {
     useEffect(() => {
         userStore.checkServer();
         userStore.authenticateUser();
-      }, []);
+    }, []);
 
     return (
         <BrowserRouter>
@@ -43,19 +43,18 @@ export const App = observer(() => {
                             backgroundColor: "white",
                         }}
                     >
-            {isAuth && (
-              <Flex gap={10}>
-                <p>{userFullName ?? ''}</p>
-                <div className="demo-logo">
-                  <LogoutOutlined
-                    title="Выйти"
-                    onClick={logOut}
-                    style={{ cursor: "pointer" }}
-                  />
-                </div>
-              </Flex>
-            )}
-
+                        {isAuth && (
+                            <Flex gap={10}>
+                                <p>{userFullName ?? ""}</p>
+                                <div className="demo-logo">
+                                    <LogoutOutlined
+                                        title="Выйти"
+                                        onClick={logOut}
+                                        style={{ cursor: "pointer" }}
+                                    />
+                                </div>
+                            </Flex>
+                        )}
                     </Header>
                     <Layout
                         style={{
