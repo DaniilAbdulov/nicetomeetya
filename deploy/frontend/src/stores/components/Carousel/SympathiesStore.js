@@ -1,18 +1,20 @@
 import {SYMPATHIES_API_URL} from "#config.js";
-import axios from "axios";
 import { autorun, makeAutoObservable } from "mobx";
 import {userStore} from '../../UserStore.js'
 import { getFullName } from "#utils/getFullName.js";
 import { getFormattedDate } from "#utils/getFormattedDate.js";
+import { DataLoadingState } from "#stores/DataLoadingState.js";
 
 class SympathiesStore {
     isLoading = false;
     sympathies = [];
     userStore;
+    dataLoadingState;
 
     constructor() {
         makeAutoObservable(this);
         this.userStore = userStore;
+        this.dataLoadingState = new DataLoadingState();
         autorun(() => this.getSympathies());
     }
 
@@ -55,39 +57,53 @@ class SympathiesStore {
     }
 
     getSympathies = async() => {
-        this.isLoading = true;
-        console.log(`getSympathies`)
+        this.dataLoadingState.loading();
+
+        const from_user_id = this.userStore.userId;
+
+        if (!from_user_id) {
+            return;
+        }
+
         try {
-            const {data: {data}} = await axios.get(`${SYMPATHIES_API_URL}/`, {
-                params: { from_user_id: this.userStore.userId }
-              }) || {};
+            const queryString = new URLSearchParams({
+                from_user_id,
+            }).toString();
 
+            const response = await fetch(`${SYMPATHIES_API_URL}/?${queryString}`);
+            
+            if (response.ok) {
+                const {data} = await response.json();
 
-            if (data?.length) {
-              this.setSympathies(data);
+                this.setSympathies(data);
             }
 
-            this.isLoading = false;
+            this.dataLoadingState.success();
             return;
-        } catch (error) {
-            console.log(error)
+        } catch (_) {
             this.setSympathies([])
-            this.isLoading = false;
-            this.errorMessage = error.response?.data.message;
+            this.dataLoadingState.error();
         }
     };
 
     createSympathy = async(id) => {
-        this.isLoading = true;
+        this.dataLoadingState.loading();
 
         try {
-            const res = await axios.post(`${SYMPATHIES_API_URL}/create`, {from_user_id: this.userStore.userId, to_user_id: id});
-            console.log(res);
-            this.isLoading = false;
+            await fetch(`${SYMPATHIES_API_URL}/create`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json;charset=utf-8",
+                            },
+                            body: JSON.stringify({
+                                from_user_id: this.userStore.userId, to_user_id: id
+                            }),
+                        });
+
+                        this.dataLoadingState.success();
             return;
-        } catch (error) {
-            this.isLoading = false;
-            this.errorMessage = error.response?.data.message;
+        } catch (_) {
+            this.dataLoadingState.error();
         }
     }
 }
