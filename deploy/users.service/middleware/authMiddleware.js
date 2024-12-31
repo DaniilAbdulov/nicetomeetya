@@ -1,10 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import jwt from "jsonwebtoken";
-export default function authMiddleware(req, res, next) {
-    if (req.method === "OPTIONS") {
-        next();
-    }
+export default function authMiddleware(req, res) {
 
     try {
         const token = req.headers.authorization.split(" ")[1];
@@ -15,7 +12,8 @@ export default function authMiddleware(req, res, next) {
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
         req.user = decoded;
-        next();
+
+        return req;
     } catch (e) {
         res.status(401).json({ message: "Не авторизован" });
     }
