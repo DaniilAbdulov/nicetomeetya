@@ -9,10 +9,14 @@ export const CarouselWrapper = observer(() => {
     const users = carouselStore.users;
     const elements = sympathiesStore.sympathiesForDrawer;
 
+    const isLoading = carouselStore.isLoading || sympathiesStore.isLoading;
+
     return (
         <div style={{display:'flex', flexDirection: 'column'}}>
-        <CarouselView users={users} />
-        <MyDrawer buttonName='Смотреть логи' elements={elements} />
+         {isLoading ? <p>{'Loading'}</p> : (
+        <><CarouselView users={users} /><MyDrawer buttonName='Смотреть логи' elements={elements} /></>
+         )}
+
         </div>
     )
 });

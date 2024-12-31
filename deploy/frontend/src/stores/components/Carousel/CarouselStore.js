@@ -4,7 +4,6 @@ import { autorun, makeAutoObservable } from "mobx";
 import { DataLoadingState } from "#stores/DataLoadingState.js";
 
 class CarouselStore {
-    isLoading = false;
     users = [];
     dataLoadingState;
 
@@ -12,6 +11,10 @@ class CarouselStore {
         makeAutoObservable(this);
         this.dataLoadingState = new DataLoadingState();
         autorun(() => this.getUsers());
+    }
+
+    get isLoading() {
+        return this.dataLoadingState.isLoading;
     }
 
     formatUsers = (users) => users.map((user) => {

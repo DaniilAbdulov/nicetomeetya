@@ -6,7 +6,6 @@ import { getFormattedDate } from "#utils/getFormattedDate.js";
 import { DataLoadingState } from "#stores/DataLoadingState.js";
 
 class SympathiesStore {
-    isLoading = false;
     sympathies = [];
     userStore;
     dataLoadingState;
@@ -16,6 +15,10 @@ class SympathiesStore {
         this.userStore = userStore;
         this.dataLoadingState = new DataLoadingState();
         autorun(() => this.getSympathies());
+    }
+
+    get isLoading() {
+        return this.dataLoadingState.isLoading;
     }
 
     get sympathiesByUser() {
