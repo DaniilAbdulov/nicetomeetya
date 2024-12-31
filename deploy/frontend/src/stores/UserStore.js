@@ -1,4 +1,3 @@
-import axios from "axios";
 import { makeAutoObservable } from "mobx";
 import { USERS_API_URL } from "../config.js";
 import { getFullName } from "#utils/getFullName.js";
@@ -40,7 +39,6 @@ class UserStore {
         this.isAuth = false;
         this.user = null;
         localStorage.removeItem("bgtrackerjwt");
-        this.initializeAxiosHeaders(null);
     }
 
     setUser = (user) => {
@@ -49,35 +47,51 @@ class UserStore {
         this.user = user;
     };
 
-    initializeAxiosHeaders = (token) => {
+    get headers() {
+        const {token} = this;
+        const headers = new Headers();
+        
         if (token) {
-            axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-        } else {
-            delete axios.defaults.headers.common.Authorization;
+            headers.append("Authorization", `Bearer ${token}`);
         }
+        
+        return headers;
     };
+
+    get token() {
+        return localStorage.getItem("bgtrackerjwt");
+    }
+
+    setToken = (token) => {
+        localStorage.setItem("bgtrackerjwt", token);
+    }
 
     async authenticateUser() {
         this.loadingState.loading();
-        const token = localStorage.getItem("bgtrackerjwt");
-        this.initializeAxiosHeaders(token);
+        const {headers} = this;
 
-        if (token) {
-            try {
-                const res = await axios.get(`${USERS_API_URL}/auth`);
-                this.setUser(res.data.user);
-                this.loadingState.success();
-                return res.data;
-            } catch (error) {
-                this.loadingState.error();
-                console.log(error.message);
+        try {
+            const response = await fetch(`${USERS_API_URL}/auth`, {headers});
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+    
+            const { user } = (await response.json()) || {};
+
+            this.setUser(user);
+            this.loadingState.success();
+
+            return;
+        } catch (error) {
+            console.error('Fetch error:', error);
+            this.loadingState.error();
         }
     }
 
     async checkServer() {
         try {
-            await axios.get(`${USERS_API_URL}/checkServer`);
+            await fetch(`${USERS_API_URL}/checkServer`);
 
             return;
         } catch (error) {
@@ -110,8 +124,7 @@ class UserStore {
             const { token, user } = (await response.json()) || {};
 
             this.setUser(user);
-            localStorage.setItem("bgtrackerjwt", token);
-            this.initializeAxiosHeaders(token);
+            this.setToken(token);
 
             this.loadingState.success();
 
