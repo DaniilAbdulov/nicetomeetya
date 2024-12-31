@@ -15,6 +15,7 @@ const fastify = Fastify();
 
 fastify.register(cors);
 
+//
 fastify.get("/api/checkServer", (request, reply) => {
     reply.send({ message: "!!!!docker server launched!!!" });
 });
