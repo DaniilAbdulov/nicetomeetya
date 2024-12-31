@@ -1,34 +1,38 @@
 import dotenv from "dotenv";
+import Fastify from "fastify";
+import cors from "@fastify/cors";
+import { db } from './db/db.js';
+
 dotenv.config({ path: "../.env" });
-import express from "express";
-import cors from "cors";
-import {db} from './db/db.js'
 
 const PORT = process.env.PORT || 4001;
+const fastify = Fastify();
 
-const app = express();
-app.use(cors());
-app.use(express.json());
 
-app.get("/api/getCities", async(req, res) => {
-    const strIds = req.query?.ids || [];
+fastify.register(cors);
+
+fastify.get("/api/getCities", async (request, reply) => {
+    const {ids: strIds} = request.query || {};
     const ids = strIds.split(',');
 
     try {
         const data = await db('cities').select().whereIn('id', ids);
 
-       return res.json({data});
+        return reply.send({ data });
     } catch (error) {
-        return  res.json({error});
+        return reply.send({ error });
     }
-
 });
 
 const start = async () => {
     try {
-        app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+        fastify.listen({ port: PORT }, (err, address) => {
+            if (err) throw err;
+            console.log(`Server started on port ${PORT}`);
+        });
     } catch (e) {
-        console.log(e);
+        console.error("Server failed to start:", e);
+        process.exit(1);
     }
 };
 
