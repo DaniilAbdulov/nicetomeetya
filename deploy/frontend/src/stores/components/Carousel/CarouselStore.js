@@ -1,14 +1,16 @@
 import {USERS_API_URL} from "#config.js";
 import { getFullName } from "#utils/getFullName.js";
-import axios from "axios";
 import { autorun, makeAutoObservable } from "mobx";
+import { DataLoadingState } from "#stores/DataLoadingState.js";
 
 class CarouselStore {
     isLoading = false;
     users = [];
+    dataLoadingState;
 
     constructor() {
         makeAutoObservable(this);
+        this.dataLoadingState = new DataLoadingState();
         autorun(() => this.getUsers());
     }
 
@@ -25,20 +27,20 @@ class CarouselStore {
     }
 
     getUsers = async() => {
-        this.isLoading = true;
+        this.dataLoadingState.loading();
 
         try {
-            const {data: {result}} = await axios.get(`${USERS_API_URL}/users`) || {};
+            const response = await fetch(`${USERS_API_URL}/users`);
+            const {result} = await response.json();
             const formattedUsers = result?.length ? this.formatUsers(result) : [];
 
             this.setUsers(formattedUsers);
 
-            this.isLoading = false;
+            this.dataLoadingState.success();
             return;
-        } catch (error) {
+        } catch (_) {
             this.setUsers([])
-            this.isLoading = false;
-            this.errorMessage = error.response?.data.message;
+            this.dataLoadingState.error();
         }
     };
 }
