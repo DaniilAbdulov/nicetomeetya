@@ -56,7 +56,7 @@ fastify.get("/api/users", async (req, reply) => {
 
 const start = async () => {
     try {
-        fastify.listen({ port: PORT }, (err, address) => {
+        fastify.listen({ port: PORT, host: '0.0.0.0' }, (err, address) => {
             if (err) throw err;
             console.log(`Server started on port ${PORT}`);
         });

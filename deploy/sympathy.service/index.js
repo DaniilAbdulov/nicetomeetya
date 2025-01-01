@@ -9,6 +9,7 @@ const sympathyController = new SympathyController();
 const PORT = Number(process.env.PORT) || 4002;
 
 const fastify = Fastify();
+
 fastify.register(cors);
 
 fastify.post("/api/create", async (req, reply) => {
@@ -20,7 +21,7 @@ fastify.post("/api/create", async (req, reply) => {
     }
 });
 
-fastify.get("/api/", async (req, reply) => {
+fastify.get("/api", async (req, reply) => {
     try {
         await sympathyController.getSympathies(req, reply);
     } catch (error) {
@@ -31,7 +32,7 @@ fastify.get("/api/", async (req, reply) => {
 
 const start = async () => {
     try {
-        fastify.listen({ port: PORT }, (err, address) => {
+        fastify.listen({ port: PORT, host: '0.0.0.0'}, (err, address) => {
             if (err) throw err;
             // Server is now listening on ${address}
             console.log(`Server started on port ${PORT}`);

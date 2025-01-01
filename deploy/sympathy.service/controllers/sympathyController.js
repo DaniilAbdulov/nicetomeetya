@@ -79,8 +79,8 @@ export class SympathyController {
 
             return reply.send({data});
         } catch (error) {
-            console.error(error);
-            return reply.status(500).send({ error: "Internal Server Error" });
+            console.log(error);
+            return reply.status(500).send({error});
         }
     }
 
