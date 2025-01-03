@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users
+  template:
+    metadata:
+      labels:
+        app: users
+    spec:
+      containers:
+      - name: users
+        image: users:prod
+        ports:
+        - containerPort: 4000
+        resources:
+          requests:
+            cpu: "250m"  # Запрашиваемое количество CPU
+            memory: "512Mi"  # Запрашиваемое количество памяти
+          limits:
+            cpu: "500m"  # Максимальное количество CPU
+            memory: "1Gi"  # Максимальное количество памяти
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: users
+spec:
+  type: NodePort
+  ports:
+  - port: 4000
+    targetPort: 4000
+    nodePort: 30000
+  selector:
+    app: users

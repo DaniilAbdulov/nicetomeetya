@@ -30,3 +30,7 @@ CMD ["node", "index.js"]
 
 # docker build --build-arg NODE_ENV=production --build-arg PORT=4000 --build-arg POSTGRES_PASSWORD='0896' -t users .
 # docker run -p 4000:4000 users
+
+# для minkube:
+#& minikube docker-env | Invoke-Expression
+#>> docker build --build-arg NODE_ENV=production --build-arg PORT=4000 --build-arg POSTGRES_PASSWORD='0896' -t users:prod . 
