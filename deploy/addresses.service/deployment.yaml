@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: addresses
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: addresses
+  template:
+    metadata:
+      labels:
+        app: addresses
+    spec:
+      containers:
+      - name: addresses
+        image: addresses:prod
+        ports:
+        - containerPort: 4001
+        resources:
+          requests:
+            cpu: "250m"  # Запрашиваемое количество CPU
+            memory: "512Mi"  # Запрашиваемое количество памяти
+          limits:
+            cpu: "500m"  # Максимальное количество CPU
+            memory: "1Gi"  # Максимальное количество памяти
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: addresses
+spec:
+  type: NodePort
+  ports:
+  - port: 4001
+    targetPort: 4001
+    nodePort: 30000
+  selector:
+    app: addresses

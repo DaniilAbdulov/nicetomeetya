@@ -29,3 +29,7 @@ CMD ["node", "index.js"]
 
 # docker build --build-arg NODE_ENV=production --build-arg PORT=4001 --build-arg POSTGRES_PASSWORD='0896' -t addresses .
 # docker run -p 4001:4001 addresses
+
+# для minkube:
+#& minikube docker-env | Invoke-Expression
+#>> docker build --build-arg NODE_ENV=production --build-arg PORT=4001 --build-arg POSTGRES_PASSWORD='0896' -t addresses:prod . 

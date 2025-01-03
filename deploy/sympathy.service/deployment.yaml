@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sympathy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sympathy
+  template:
+    metadata:
+      labels:
+        app: sympathy
+    spec:
+      containers:
+      - name: sympathy
+        image: sympathy:prod
+        ports:
+        - containerPort: 4002
+        resources:
+          requests:
+            cpu: "250m"  # Запрашиваемое количество CPU
+            memory: "512Mi"  # Запрашиваемое количество памяти
+          limits:
+            cpu: "500m"  # Максимальное количество CPU
+            memory: "1Gi"  # Максимальное количество памяти
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sympathy
+spec:
+  type: NodePort
+  ports:
+  - port: 4002
+    targetPort: 4002
+    nodePort: 30000
+  selector:
+    app: sympathy
