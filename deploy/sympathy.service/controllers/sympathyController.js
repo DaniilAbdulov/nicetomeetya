@@ -1,4 +1,4 @@
-import {db} from '../db/db.js';
+import db from '../db/db.js';
 import {USERS_API_URL} from '../config.js';
 
 export class SympathyController {
