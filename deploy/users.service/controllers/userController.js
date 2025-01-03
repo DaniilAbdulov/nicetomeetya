@@ -1,4 +1,4 @@
-import { db } from "../db/db.js";
+import db from "../db/db.js";
 import dotenv from "dotenv";
 import { ADDRESSES_API_URL } from "../config.js";
 dotenv.config();
