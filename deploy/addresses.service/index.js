@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
-import { db } from './db/db.js';
+import db from './db/db.js';
 
 dotenv.config({ path: "../.env" });
 
