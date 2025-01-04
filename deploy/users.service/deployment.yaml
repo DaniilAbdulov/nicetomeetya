@@ -17,6 +17,19 @@ spec:
         image: users:prod
         ports:
         - containerPort: 4000
+        env:
+        - name: PORT
+          value: "4000"
+        - name: POSTGRES_DB
+          value: "users"  # Если это ваша база данных
+        - name: POSTGRES_USER
+          value: "postgres"  # Имя пользователя
+        - name: POSTGRES_PASSWORD
+          value: "0896"  # Пароль
+        - name: POSTGRES_HOSTNAME
+          value: "postgres"  # Имя сервиса PostgreSQL
+        - name: ISLOCALDEV
+          value: ''
         resources:
           requests:
             cpu: "250m"  # Запрашиваемое количество CPU
@@ -30,10 +43,10 @@ kind: Service
 metadata:
   name: users
 spec:
-  type: NodePort
-  ports:
-  - port: 4000
-    targetPort: 4000
-    nodePort: 30000
   selector:
     app: users
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 4000
+  type: NodePort

@@ -1,10 +1,9 @@
-import db from "../db/db.js";
 import dotenv from "dotenv";
 import { ADDRESSES_API_URL } from "../config.js";
 dotenv.config();
 
 export class UserController {
-    async getUsers(req, reply) {
+    async getUsers(req, reply, db) {
         const { ids } = req.query || {};
 
         try {
@@ -78,7 +77,7 @@ export class UserController {
             console.error(error);
             return reply
                 .status(500)
-                .send({ message: "Непредвиденная ошибка сервера" });
+                .send({ message: `${error}` });
         }
     }
 }

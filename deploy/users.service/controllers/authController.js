@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import db from "../db/db.js";
 
 export class AuthController {
 
@@ -19,7 +18,7 @@ export class AuthController {
   return jwt.sign(payload, secret, options);
   }
 
-  async login(req, reply) {
+  async login(req, reply, db) {
 
       try {
           const { login, password } = req.body || {};
@@ -75,7 +74,7 @@ export class AuthController {
       }
   }
 
-  async check(req, reply) {
+  async check(req, reply, db) {
       try {
           const { id } = req.user;
           if (id <= 0) {

@@ -1,21 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config({ path: "./.env" });
+import { development} from "./config/index.js";
 
-export const development = {
-    client: "postgresql",
-    connection: {
-        database: process.env.POSTGRES_DB,
-        user: process.env.POSTGRES_USER,
-        password: process.env.POSTGRES_PASSWORD,
-    },
-    pool: {
-        min: 2,
-        max: 10,
-    },
-    migrations: {
-        directory: "./db/migrations",
-    },
-    seeds: {
-        directory: "./db/seeds",
-    },
-};
+export const devConnection = development.connect;
