@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
-import db from './db/db.js';
+import db from "./db/db.js";
 
 dotenv.config({ path: "../.env" });
 
@@ -13,7 +13,11 @@ fastify.register(cors);
 
 fastify.get("/api/getCities", async (request, reply) => {
     const {ids: strIds} = request.query || {};
-    const ids = strIds.split(',');
+    const ids = strIds ? strIds.split(',') : [];
+
+    if (!ids.length) {
+        return reply.send({ message: 'Ids of cities is empty' });
+    }
 
     try {
         const data = await db('cities').select().whereIn('id', ids);

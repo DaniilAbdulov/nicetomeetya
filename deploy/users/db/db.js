@@ -1,15 +1,16 @@
 import knex from "knex";
-import { development } from "../knexfile.js";
+import { devConnection } from "../knexfile.js";
 import dotenv from "dotenv";
 dotenv.config({ path: "../.env" });
 
-const defaultDbConfig = {
-    ...development.connection,
-    database: 'postgres'
-};
+const isLocalDev = Boolean(process.env.ISLOCALDEV);
+devConnection.connection.database = 'postgres';
 
-const db = knex({ ...development, connection: defaultDbConfig });
+if (isLocalDev) {
+  delete devConnection.connection.host;
+}
 
+const db = knex(devConnection);
 let newDb;
 
 const runMigrations = async () => {
@@ -24,19 +25,23 @@ const runMigrations = async () => {
         await db.destroy();
     }
 
-    newDb = knex(development);
+    devConnection.connection.database = process.env.POSTGRES_DB;
+
+    if (!isLocalDev) {
+        devConnection.connection.host = process.env.POSTGRES_HOSTNAME;
+    }
+
+    newDb = knex(devConnection);
 
     try {
         await newDb.migrate.latest();
         console.log('Миграции успешно применены');
     } catch (err) {
         console.error('Ошибка при применении миграций:', err);
-    } finally {
-        await newDb.destroy();
     }
 };
 
-runMigrations()
+await runMigrations()
     .then(() => {
         console.log('Инициализация завершена');
     })

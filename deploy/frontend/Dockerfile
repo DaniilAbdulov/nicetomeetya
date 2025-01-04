@@ -21,3 +21,7 @@ RUN npm i
 COPY . .
 
 CMD ["npm", "start"]
+
+# для minkube:
+#& minikube docker-env | Invoke-Expression
+#>> docker build -t frontend:prod . 

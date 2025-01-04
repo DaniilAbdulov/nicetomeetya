@@ -17,6 +17,19 @@ spec:
         image: sympathy:prod
         ports:
         - containerPort: 4002
+        env:
+        - name: PORT
+          value: "4002"
+        - name: POSTGRES_DB
+          value: "sympathy"  # Если это ваша база данных
+        - name: POSTGRES_USER
+          value: "postgres"  # Имя пользователя
+        - name: POSTGRES_PASSWORD
+          value: "0896"  # Пароль
+        - name: POSTGRES_HOSTNAME
+          value: "postgres"  # Имя сервиса PostgreSQL
+        - name: ISLOCALDEV
+          value: ''
         resources:
           requests:
             cpu: "250m"  # Запрашиваемое количество CPU
@@ -30,10 +43,10 @@ kind: Service
 metadata:
   name: sympathy
 spec:
-  type: NodePort
-  ports:
-  - port: 4002
-    targetPort: 4002
-    nodePort: 30000
   selector:
     app: sympathy
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 4002
+  type: NodePort

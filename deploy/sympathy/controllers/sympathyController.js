@@ -1,8 +1,7 @@
-import db from '../db/db.js';
 import {USERS_API_URL} from '../config.js';
 
 export class SympathyController {
-    create = async (req, reply) => {
+    create = async (req, reply, db) => {
         const { from_user_id, to_user_id } = req.body || {};
     
         if (!from_user_id || !to_user_id) {
@@ -23,8 +22,12 @@ export class SympathyController {
         }
     }
 
-    getSympathies = async(req, reply) => {
+    getSympathies = async(req, reply, db) => {
         const {from_user_id} = req.query || {};
+
+        if (!from_user_id) {
+            return reply.status(500).send({ error: "from_user_id is undefined" });
+        }
 
         try {
             const sympathies = await db("sympathy")
