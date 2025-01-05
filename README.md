@@ -108,6 +108,7 @@ namePod-id набора реплик-уникальный id пода
 одного деплоймента. (Только внутри кластера)
 
 - NodePort:
+
 |Name|Values|
 |-|-|
 |Name:|users|
@@ -149,6 +150,7 @@ minikube service users --url, то minikube создаст туннель для
 Создадим сервис с таким типом и выведем о нем ифнормацию
 
 - NodePort:
+
 |Name|Values|
 |-|-|
 |Name:|users|
