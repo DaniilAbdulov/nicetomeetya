@@ -47,6 +47,6 @@ spec:
     app: users
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 4000
+      port: 80 #порт для обращения
+      targetPort: 4000 #порт на котором работает сервис fastifty
   type: LoadBalancer

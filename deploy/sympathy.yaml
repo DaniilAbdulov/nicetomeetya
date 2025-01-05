@@ -45,6 +45,6 @@ spec:
     app: sympathy
   ports:
     - protocol: TCP
-      port: 82
-      targetPort: 4002
+      port: 82 #порт для обращения
+      targetPort: 4002 #порт на котором работает сервис fastifty
   type: LoadBalancer

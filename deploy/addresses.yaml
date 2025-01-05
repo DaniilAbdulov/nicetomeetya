@@ -47,6 +47,6 @@ spec:
     app: addresses
   ports:
     - protocol: TCP
-      port: 81
-      targetPort: 4001
+      port: 81 #порт для обращения
+      targetPort: 4001 #порт на котором работает сервис fastifty
   type: LoadBalancer

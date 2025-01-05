@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: front
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: frontend
+      app: front
   template:
     metadata:
       labels:
-        app: frontend
+        app: front
     spec:
       containers:
-      - name: frontend
-        image: frontend:prod
+      - name: front
+        image: abdulovdb/front
         ports:
         - containerPort: 3000
         env:
@@ -31,12 +31,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
+  name: front
 spec:
   selector:
-    app: frontend
+    app: front
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 3000
-  type: NodePort
+      port: 84 #порт для обращения
+      targetPort: 3000 #порт на котором работает фронт
+  type: LoadBalancer
