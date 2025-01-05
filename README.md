@@ -85,19 +85,21 @@ namePod-id набора реплик-уникальный id пода
 При создании сервисов мы можем их создать трех видов:
 - Cluster IP:
 Если вывести команду kubectl describe service postgres (в моем случае данный сервис имеет тип Cluster IP) то можно будет увидеть следующую информацию:
---------------------------------------
-Name:              postgres
-Namespace:         default
-Selector:          app=postgres    
-Type:              ClusterIP        
-IP Family Policy:  SingleStack      
-IP Families:       IPv4
-IP:                10.105.115.171   
-IPs:               10.105.115.171   
-Port:              <unset>  5432/TCP
-TargetPort:        5432/TCP
-Endpoints:         10.244.0.3:5432  
---------------------------------------
+
+|Name|Values|
+|-|-|
+|Name:|postgres|
+|Namespace:|default|
+|Selector:|app=postgres|
+|Type:|ClusterIP|
+|IP Family Policy:|SingleStack|
+|IP Families:|IPv4|
+|IP:|10.105.115.171|
+|IPs:|10.105.115.171|
+|Port:|<unset>  5432/TCP|
+|TargetPort:|5432/TCP|
+|Endpoints:|10.244.0.3:5432|
+
 Из инофрмации следует, что сервис принимает запросы на
 10.105.115.171 с портом 5432 и перенаправляет на целевой порт 5432(TargetPort)
 В endpoints указаны то, куда идет перенаправление. Т.е
@@ -106,20 +108,21 @@ Endpoints:         10.244.0.3:5432
 одного деплоймента. (Только внутри кластера)
 
 - NodePort:
---------------------------------------
-Name:                     users
-Namespace:                default
-Selector:                 app=users
-Type:                     NodePort
-IP Family Policy:         SingleStack
-IP Families:              IPv4
-IP:                       10.107.239.116
-IPs:                      10.107.239.116
-Port:                     <unset>  80/TCP
-TargetPort:               4000/TCP
-NodePort:                 <unset>  30000/TCP
-Endpoints:                10.244.0.4:4000
---------------------------------------
+|Name|Values|
+|-|-|
+|Name:|users|
+|Namespace:|default|
+|Selector:|app=users|
+|Type:|NodePort|
+|IP Family Policy:|SingleStack|
+|IP Families:|IPv4|
+|IP:|10.107.239.116|
+|IPs:|10.107.239.116|
+|Port:|<unset>  80/TCP|
+|TargetPort:|4000/TCP|
+|NodePort:|<unset>  30000/TCP|
+|Endpoints:|10.244.0.4:4000|
+
 В данном случае NodePort 30000 означает, что данный порт был открыт для данного узла для обращения извне.
 Порядок такой:
 - для начала получим ip адрес ноды командой minikube ip (192.168.49.2)
@@ -144,23 +147,23 @@ minikube service users --url, то minikube создаст туннель для
 Создается отдельный external-ip адрес. Все запросы проходят через него.
 Командой minikube tunnel запустим тунелирование.
 Создадим сервис с таким типом и выведем о нем ифнормацию
-----------------------
-Name:                     users
-Namespace:                default
-Selector:                 app=users
-Type:                     LoadBalancer
-IP Family Policy:         SingleStack
-IP Families:              IPv4
-IP:                       10.98.215.214
-IPs:                      10.98.215.214
-LoadBalancer Ingress:     127.0.0.1
-Port:                     <unset>  80/TCP
-TargetPort:               4000/TCP
-NodePort:                 <unset>  30441/TCP
-Endpoints:                10.244.0.11:4000
-Session Affinity:         None
-External Traffic Policy:  Cluster
----------------------
+
+- NodePort:
+|Name|Values|
+|-|-|
+|Name:|users|
+|Namespace:|default|
+|Selector:|app=users|
+|Type:|LoadBalancer|
+|IP Family Policy:|SingleStack|
+|IP Families:|IPv4|
+|IP:|10.98.215.214|
+|IPs:|10.98.215.214|
+|Port:|<unset>  80/TCP|
+|TargetPort:|4000/TCP|
+|NodePort:|<unset>  30441/TCP|
+|Endpoints:|10.244.0.11:4000|
+
 Что прозойдет ?
 Есть кластер k8s. У него есть внешний IP с адресом 127.0.0.1:80 ->
 Есть сервис внутри кластера с адресом 10.98.215.214:30441 -> в сервисе есть узлы
