@@ -11,6 +11,14 @@ const fastify = Fastify();
 
 fastify.register(cors);
 
+fastify.get("/", async (request, reply) => {
+    const data = {
+      msg: 'msg from addresses'
+    };
+
+    return reply.send({ data });
+});
+
 fastify.get("/api/getCities", async (request, reply) => {
     const {ids: strIds} = request.query || {};
     const ids = strIds ? strIds.split(',') : [];
