@@ -149,8 +149,6 @@ minikube service users --url, то minikube создаст туннель для
 Командой minikube tunnel запустим тунелирование.
 Создадим сервис с таким типом и выведем о нем ифнормацию
 
-- NodePort:
-
 |Name|Values|
 |-|-|
 |Name:|users|
