@@ -47,6 +47,7 @@ export class SympathyController {
             const queryString = new URLSearchParams({
                 ids: uniqUserIds,
             }).toString();
+
     
             try {
                 const response = await fetch(
@@ -58,7 +59,10 @@ export class SympathyController {
                 );
     
                 if (!response.ok) {
+                    console.log(`Response for url: ${USERS_API_URL}/users?${queryString} complete error`)
                     throw new Error(`HTTP error! status: ${response.status}`);
+                } else {
+                    console.log(`Response for url: ${USERS_API_URL}/users?${queryString} complete success`)
                 }
     
                 const { result } = await response.json();

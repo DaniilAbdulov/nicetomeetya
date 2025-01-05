@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sympathy
+  name: addresses
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sympathy
+      app: addresses
   template:
     metadata:
       labels:
-        app: sympathy
+        app: addresses
     spec:
       containers:
-      - name: sympathy
-        image: sympathy:prod
+      - name: addresses
+        image: abdulovdb/addresses
         ports:
-        - containerPort: 4002
+        - containerPort: 4001
         env:
         - name: PORT
-          value: "4002"
+          value: "4001"
         - name: POSTGRES_DB
-          value: "sympathy"  # Если это ваша база данных
+          value: "addresses"  # Если это ваша база данных
         - name: POSTGRES_USER
           value: "postgres"  # Имя пользователя
         - name: POSTGRES_PASSWORD
@@ -41,13 +41,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: sympathy
+  name: addresses
 spec:
   selector:
-    app: sympathy
+    app: addresses
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 4002
-      nodePort: 30002
-  type: NodePort
+      port: 81
+      targetPort: 4001
+  type: LoadBalancer

@@ -4,7 +4,7 @@ FROM node:21
 # Определяем аргументы, которые можно передать в момент сборки образа
 ARG NODE_ENV=production
 ARG PORT=4002
-ARG POSTGRES_DB=sympathy.service
+ARG POSTGRES_DB='sympathy'
 ARG POSTGRES_USER=postgres
 
 # Устанавливаем переменные окружения внутри контейнера
@@ -27,10 +27,3 @@ RUN npm i
 COPY . .
 
 CMD ["node", "index.js"]
-
-# docker build --build-arg NODE_ENV=production --build-arg PORT=4002 --build-arg POSTGRES_PASSWORD='0896' -t sympathy .
-# docker run -p 4002:4002 sympathy
-
-# для minkube:
-#& minikube docker-env | Invoke-Expression
-#>> docker build --build-arg NODE_ENV=production --build-arg PORT=4002 --build-arg POSTGRES_PASSWORD='0896' -t sympathy:prod . 

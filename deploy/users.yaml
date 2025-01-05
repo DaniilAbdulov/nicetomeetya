@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: addresses
+  name: users
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: addresses
+      app: users
   template:
     metadata:
       labels:
-        app: addresses
+        app: users
     spec:
       containers:
-      - name: addresses
-        image: addresses:prod
+      - name: users
+        image: abdulovdb/users
         ports:
-        - containerPort: 4001
+        - containerPort: 4000
         env:
         - name: PORT
-          value: "4001"
+          value: "4000"
         - name: POSTGRES_DB
-          value: "addresses"  # Если это ваша база данных
+          value: "users"  # Если это ваша база данных
         - name: POSTGRES_USER
           value: "postgres"  # Имя пользователя
         - name: POSTGRES_PASSWORD
@@ -41,13 +41,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: addresses
+  name: users
 spec:
   selector:
-    app: addresses
+    app: users
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 4001
-      nodePort: 30001
-  type: NodePort
+      targetPort: 4000
+  type: LoadBalancer

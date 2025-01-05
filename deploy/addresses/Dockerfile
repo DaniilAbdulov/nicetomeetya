@@ -38,4 +38,7 @@ CMD ["node", "index.js"]
 
 # для minkube:
 #& minikube docker-env | Invoke-Expression
-#>> docker build -t users:prod . 
+
+
+
+#>> docker build -t abdulovdb/addresses . 

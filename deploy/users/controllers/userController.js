@@ -32,6 +32,8 @@ export class UserController {
             }).toString();
 
             try {
+                console.log(`Try to fetch to ${ADDRESSES_API_URL}/getCities?${queryString}`)
+
                 const response = await fetch(
                     `${ADDRESSES_API_URL}/getCities?${queryString}`,
                     {
@@ -41,6 +43,12 @@ export class UserController {
                         },
                     }
                 );
+
+                if (!response.ok) {
+                    console.log(`Response by URL: ${ADDRESSES_API_URL}/getCities?${queryString} is complete with error`);
+                } else {
+                    console.log(`Response by URL: ${ADDRESSES_API_URL}/getCities?${queryString} is complete succes`);
+                }
 
                 const { data } = await response.json();
                 cities = data;
